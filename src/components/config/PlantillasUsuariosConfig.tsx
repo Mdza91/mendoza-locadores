@@ -142,13 +142,16 @@ export const PlantillasUsuariosConfig = () => {
   };
 
   const handleDownload = async (plantilla: any) => {
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(plantilla.ruta_archivo, 60);
-    if (data?.signedUrl) {
+    try {
+      const { data, error } = await downloadFromR2(plantilla.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
+      const url = URL.createObjectURL(data);
       const a = document.createElement("a");
-      a.href = data.signedUrl;
+      a.href = url;
       a.download = plantilla.nombre_archivo;
       a.click();
-    } else {
+      URL.revokeObjectURL(url);
+    } catch {
       toast.error("Error al generar enlace de descarga");
     }
   };
