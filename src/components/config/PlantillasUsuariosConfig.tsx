@@ -57,7 +57,7 @@ export const PlantillasUsuariosConfig = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (plantilla: any) => {
-      await supabase.storage.from("documentos").remove([plantilla.ruta_archivo]);
+      await deleteFromR2([plantilla.ruta_archivo]);
       const { error } = await supabase.from("plantillas_usuarios").delete().eq("id", plantilla.id);
       if (error) throw error;
     },
