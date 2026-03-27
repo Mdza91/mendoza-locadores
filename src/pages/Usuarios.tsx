@@ -65,7 +65,7 @@ const Usuarios = () => {
     mutationFn: async (locador: any) => {
       if (!locador.numero_documento) throw new Error("Número de documento no disponible");
       const { data, error } = await supabase.functions.invoke('manage-locador-user', {
-        body: JSON.stringify({ action: 'create', locador_id: locador.id, numero_documento: locador.numero_documento })
+        body: { action: 'create', locador_id: locador.id, numero_documento: locador.numero_documento }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
