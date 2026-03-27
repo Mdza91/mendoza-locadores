@@ -144,9 +144,7 @@ const GrupoDenominacion = ({
 
   const handleView = async (doc: any) => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").createSignedUrl(doc.ruta_archivo, 60);
-      if (error) throw error;
-      window.open(data.signedUrl, "_blank");
+      window.open(getR2ViewUrl(doc.ruta_archivo), "_blank");
     } catch {
       toast.error("Error al abrir documento");
     }
