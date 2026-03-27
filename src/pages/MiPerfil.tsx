@@ -55,7 +55,7 @@ const PlantillasDescargaLocador = () => {
   if (!plantillas?.length) return null;
 
   const handleDownload = async (p: any) => {
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(p.ruta_archivo, 60);
+    const { data, error } = await downloadFromR2(p.ruta_archivo);
     if (data?.signedUrl) {
       const a = document.createElement("a");
       a.href = data.signedUrl;
