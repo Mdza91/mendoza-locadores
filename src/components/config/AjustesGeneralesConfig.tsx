@@ -98,7 +98,7 @@ export function AjustesGeneralesConfig() {
     if (!settings?.logo_url) return;
     setSaving(true);
     try {
-      await supabase.storage.from("documentos").remove([settings.logo_url]);
+      await deleteFromR2([settings.logo_url]);
       const { error } = await supabase
         .from("config_app_settings")
         .update({ logo_url: null })
