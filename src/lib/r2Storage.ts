@@ -2,6 +2,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 const R2_PUBLIC_URL = "https://pub-859bcf561b974ee98398f558079b35b9.r2.dev";
 
+const SUPABASE_URL = "https://gikeegxdrkelhpfkcaci.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdpa2VlZ3hkcmtlbGhwZmtjYWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2MjM1MDgsImV4cCI6MjA5MDE5OTUwOH0.GQSx8-KblrXTzNxnwGi5j_QzwKhJr-akLP-KwBG-FsY";
+
 /**
  * Get the public URL for a file stored in R2
  */
@@ -10,19 +13,36 @@ export function getR2PublicUrl(path: string): string {
 }
 
 /**
- * Upload a file to R2 via edge function
+ * Upload a file to R2 via edge function using fetch (not invoke, to support query params)
  */
 export async function uploadToR2(file: File, path: string): Promise<{ error: Error | null }> {
   try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+    if (!accessToken) throw new Error("No active session");
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("path", path);
 
-    const { data, error } = await supabase.functions.invoke("r2-storage?action=upload", {
-      body: formData,
-    });
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/r2-storage?action=upload`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          apikey: SUPABASE_ANON_KEY,
+        },
+        body: formData,
+      }
+    );
 
-    if (error) throw error;
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData?.error || `Upload failed: ${response.status}`);
+    }
+
+    const data = await response.json();
     if (data?.error) throw new Error(data.error);
 
     return { error: null };
@@ -36,11 +56,29 @@ export async function uploadToR2(file: File, path: string): Promise<{ error: Err
  */
 export async function deleteFromR2(paths: string[]): Promise<{ error: Error | null }> {
   try {
-    const { data, error } = await supabase.functions.invoke("r2-storage?action=delete", {
-      body: { paths },
-    });
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+    if (!accessToken) throw new Error("No active session");
 
-    if (error) throw error;
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/r2-storage?action=delete`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          apikey: SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ paths }),
+      }
+    );
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData?.error || `Delete failed: ${response.status}`);
+    }
+
+    const data = await response.json();
     if (data?.error) throw new Error(data.error);
 
     return { error: null };
