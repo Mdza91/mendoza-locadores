@@ -92,7 +92,7 @@ export const SubidaDocumento = ({ locadorId, etapa, documentosSubidos, onSuccess
       const nombreArchivo = `${sanitizarNombre(nombreDocumento)}_${sanitizarNombre(locador?.apellidos || "")}_${timestamp}.pdf`;
       const rutaArchivo = `${locadorId}/${nombreArchivo}`;
 
-      const { error: uploadError } = await supabase.storage.from("documentos").upload(rutaArchivo, archivo);
+      const { error: uploadError } = await uploadToR2(archivo!, rutaArchivo);
       if (uploadError) throw uploadError;
 
       const documentoData: any = {

@@ -60,9 +60,7 @@ export const ReemplazarDocumento = ({
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
       const filePath = `${locadorId}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(filePath, file);
+      const { error: uploadError } = await uploadToR2(file, filePath);
 
       if (uploadError) throw uploadError;
 

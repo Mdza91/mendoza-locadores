@@ -87,12 +87,7 @@ export const SubidaDocumentoEmergencia = ({
       const filePath = `${locadorId}/emergencia/${documentoKey}_${nombreSanitizado}_${timestamp}.pdf`;
 
       // Subir archivo a storage
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(filePath, archivo, {
-          contentType: "application/pdf",
-          upsert: false,
-        });
+      const { error: uploadError } = await uploadToR2(archivo, filePath);
 
       if (uploadError) throw uploadError;
 
