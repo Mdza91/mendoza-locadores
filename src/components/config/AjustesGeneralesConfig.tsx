@@ -114,7 +114,7 @@ export function AjustesGeneralesConfig() {
   };
 
   const logoPublicUrl = settings?.logo_url
-    ? supabase.storage.from("documentos").getPublicUrl(settings.logo_url).data.publicUrl
+    ? getR2PublicUrl(settings.logo_url)
     : null;
 
   if (isLoading) {
