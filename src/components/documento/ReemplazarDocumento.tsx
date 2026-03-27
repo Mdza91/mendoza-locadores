@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { uploadToR2 } from "@/lib/r2Storage";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
