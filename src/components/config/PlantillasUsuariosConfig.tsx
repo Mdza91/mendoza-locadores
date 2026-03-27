@@ -112,9 +112,9 @@ export const PlantillasUsuariosConfig = () => {
       }
       if (editFile) {
         // Remove old file
-        await supabase.storage.from("documentos").remove([plantilla.ruta_archivo]);
+        await deleteFromR2([plantilla.ruta_archivo]);
         const path = `plantillas/${Date.now()}_${editFile.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-        const { error: uploadError } = await supabase.storage.from("documentos").upload(path, editFile);
+        const { error: uploadError } = await uploadToR2(editFile, path);
         if (uploadError) throw uploadError;
         updates.ruta_archivo = path;
         updates.nombre_archivo = editFile.name;
