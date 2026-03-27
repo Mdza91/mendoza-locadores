@@ -56,11 +56,13 @@ const PlantillasDescargaLocador = () => {
 
   const handleDownload = async (p: any) => {
     const { data, error } = await downloadFromR2(p.ruta_archivo);
-    if (data?.signedUrl) {
+    if (data && !error) {
+      const url = URL.createObjectURL(data);
       const a = document.createElement("a");
-      a.href = data.signedUrl;
+      a.href = url;
       a.download = p.nombre_archivo;
       a.click();
+      URL.revokeObjectURL(url);
     } else {
       toast.error("Error al descargar");
     }
