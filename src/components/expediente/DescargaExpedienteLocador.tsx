@@ -421,9 +421,7 @@ export const DescargaExpedienteLocador = ({
         }
         
         if (rutaArchivo) {
-          const { data, error } = await supabase.storage
-            .from("documentos")
-            .download(rutaArchivo);
+          const { data, error } = await downloadFromR2(rutaArchivo);
           
           if (!error && data) {
             const arrayBuffer = await data.arrayBuffer();
