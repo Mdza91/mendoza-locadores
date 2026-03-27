@@ -1453,8 +1453,8 @@ const EmergencyDocCardWrapper = ({
 
   const handleDownload = async () => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").download(docSubido.ruta_archivo);
-      if (error) throw error;
+      const { data, error } = await downloadFromR2(docSubido.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
       const url = window.URL.createObjectURL(data);
       const a = document.createElement("a");
       a.href = url; a.download = docSubido.nombre_archivo;
