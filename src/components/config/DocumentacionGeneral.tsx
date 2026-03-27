@@ -83,9 +83,7 @@ const GrupoDenominacion = ({
       const nombreArchivo = `${nombreSanitizado}_${denominacionId.slice(0, 8)}_${timestamp}.pdf`;
       const rutaArchivo = `general/por_denominacion/${denominacionId}/${nombreArchivo}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(rutaArchivo, archivo);
+      const { error: uploadError } = await uploadToR2(archivo, rutaArchivo);
       if (uploadError) throw uploadError;
 
       const { error: dbError } = await supabase
