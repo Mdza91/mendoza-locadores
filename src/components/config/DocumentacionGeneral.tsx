@@ -116,7 +116,7 @@ const GrupoDenominacion = ({
 
   const handleDelete = async (doc: any) => {
     try {
-      await supabase.storage.from("documentos").remove([doc.ruta_archivo]);
+      await deleteFromR2([doc.ruta_archivo]);
       await supabase.from("documentos_generales_por_denominacion").delete().eq("id", doc.id);
       toast.success("Documento eliminado");
       onRefetch();
