@@ -75,9 +75,7 @@ export function AjustesGeneralesConfig() {
         await deleteFromR2([settings.logo_url]);
       }
 
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(path, file, { upsert: true });
+      const { error: uploadError } = await uploadToR2(file, path);
       if (uploadError) throw uploadError;
 
       const { error: updateError } = await supabase
