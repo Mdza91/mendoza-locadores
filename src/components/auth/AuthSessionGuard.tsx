@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const STORAGE_KEY = "sb-vfrhingfdteydwuvuttg-auth-token";
+const STORAGE_KEY = "sb-gikeegxdrkelhpfkcaci-auth-token";
 
 export default function AuthSessionGuard({
   children,
