@@ -127,8 +127,8 @@ const GrupoDenominacion = ({
 
   const handleDownload = async (doc: any) => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").download(doc.ruta_archivo);
-      if (error) throw error;
+      const { data, error } = await downloadFromR2(doc.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
       const url = window.URL.createObjectURL(data);
       const a = document.createElement("a");
       a.href = url;
