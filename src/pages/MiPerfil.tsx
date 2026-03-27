@@ -1464,12 +1464,8 @@ const EmergencyDocCardWrapper = ({
     } catch (error) { toast.error("Error al descargar documento"); }
   };
 
-  const handleView = async () => {
-    try {
-      const { data, error } = await supabase.storage.from("documentos").createSignedUrl(docSubido.ruta_archivo, 60);
-      if (error) throw error;
-      window.open(data.signedUrl, "_blank");
-    } catch (error) { toast.error("Error al abrir documento"); }
+  const handleView = () => {
+    window.open(getR2ViewUrl(docSubido.ruta_archivo), "_blank");
   };
 
   const InfoPopover = () => textoAyuda ? (
