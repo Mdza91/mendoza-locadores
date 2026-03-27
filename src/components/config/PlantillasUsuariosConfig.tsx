@@ -77,7 +77,7 @@ export const PlantillasUsuariosConfig = () => {
     try {
       const ext = file.name.split(".").pop();
       const path = `plantillas/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-      const { error: uploadError } = await supabase.storage.from("documentos").upload(path, file);
+      const { error: uploadError } = await uploadToR2(file, path);
       if (uploadError) throw uploadError;
 
       const { data: { user } } = await supabase.auth.getUser();
