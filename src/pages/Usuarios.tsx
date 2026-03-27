@@ -78,7 +78,7 @@ const Usuarios = () => {
   const eliminarCuentaMutation = useMutation({
     mutationFn: async (locadorId: string) => {
       const { data, error } = await supabase.functions.invoke('manage-locador-user', {
-        body: JSON.stringify({ action: 'delete', locador_id: locadorId })
+        body: { action: 'delete', locador_id: locadorId }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
