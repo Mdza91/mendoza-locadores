@@ -133,7 +133,7 @@ const Locadores = () => {
   const eliminarLocadorMutation = useMutation({
     mutationFn: async (locadorId: string) => {
       const { data, error } = await supabase.functions.invoke('delete-locador', {
-        body: JSON.stringify({ locador_id: locadorId })
+        body: { locador_id: locadorId }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
