@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadFromR2 } from "@/lib/r2Storage";
 import {
   Dialog,
   DialogContent,
