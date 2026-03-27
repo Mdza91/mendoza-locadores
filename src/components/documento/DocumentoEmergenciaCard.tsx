@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { downloadFromR2 } from "@/lib/r2Storage";
 
 interface DocumentoEmergenciaCardProps {
   documento: {
@@ -27,11 +28,8 @@ export const DocumentoEmergenciaCard = ({
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      const { data, error } = await supabase.storage
-        .from("documentos")
-        .download(documento.ruta_archivo);
-
-      if (error) throw error;
+      const { data, error } = await downloadFromR2(documento.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
 
       const url = URL.createObjectURL(data);
       const link = document.createElement("a");

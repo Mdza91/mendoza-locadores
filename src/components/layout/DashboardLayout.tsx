@@ -67,7 +67,7 @@ const DashboardLayout = () => {
 
   const appName = appSettings?.nombre_app || "Locadores";
   const logoUrl = appSettings?.logo_url
-    ? supabase.storage.from("documentos").getPublicUrl(appSettings.logo_url).data.publicUrl
+    ? `https://pub-859bcf561b974ee98398f558079b35b9.r2.dev/${appSettings.logo_url}`
     : null;
 
   const isActive = (path: string) => location.pathname.startsWith(path);

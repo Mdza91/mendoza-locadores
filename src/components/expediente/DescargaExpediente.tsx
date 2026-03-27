@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadFromR2 } from "@/lib/r2Storage";
 import {
   Dialog,
   DialogContent,
@@ -407,9 +408,7 @@ export const DescargaExpediente = ({
         }
         
         if (rutaArchivo) {
-          const { data, error } = await supabase.storage
-            .from("documentos")
-            .download(rutaArchivo);
+          const { data, error } = await downloadFromR2(rutaArchivo);
           
           if (!error && data) {
             const arrayBuffer = await data.arrayBuffer();

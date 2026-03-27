@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadToR2, deleteFromR2, downloadFromR2, getR2ViewUrl } from "@/lib/r2Storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,9 +83,7 @@ const GrupoDenominacion = ({
       const nombreArchivo = `${nombreSanitizado}_${denominacionId.slice(0, 8)}_${timestamp}.pdf`;
       const rutaArchivo = `general/por_denominacion/${denominacionId}/${nombreArchivo}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(rutaArchivo, archivo);
+      const { error: uploadError } = await uploadToR2(archivo, rutaArchivo);
       if (uploadError) throw uploadError;
 
       const { error: dbError } = await supabase
@@ -117,7 +116,7 @@ const GrupoDenominacion = ({
 
   const handleDelete = async (doc: any) => {
     try {
-      await supabase.storage.from("documentos").remove([doc.ruta_archivo]);
+      await deleteFromR2([doc.ruta_archivo]);
       await supabase.from("documentos_generales_por_denominacion").delete().eq("id", doc.id);
       toast.success("Documento eliminado");
       onRefetch();
@@ -128,8 +127,8 @@ const GrupoDenominacion = ({
 
   const handleDownload = async (doc: any) => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").download(doc.ruta_archivo);
-      if (error) throw error;
+      const { data, error } = await downloadFromR2(doc.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
       const url = window.URL.createObjectURL(data);
       const a = document.createElement("a");
       a.href = url;
@@ -145,9 +144,7 @@ const GrupoDenominacion = ({
 
   const handleView = async (doc: any) => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").createSignedUrl(doc.ruta_archivo, 60);
-      if (error) throw error;
-      window.open(data.signedUrl, "_blank");
+      window.open(getR2ViewUrl(doc.ruta_archivo), "_blank");
     } catch {
       toast.error("Error al abrir documento");
     }

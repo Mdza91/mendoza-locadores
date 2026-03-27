@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { uploadToR2 } from "@/lib/r2Storage";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
@@ -59,9 +60,7 @@ export const ReemplazarDocumento = ({
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
       const filePath = `${locadorId}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(filePath, file);
+      const { error: uploadError } = await uploadToR2(file, filePath);
 
       if (uploadError) throw uploadError;
 

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { uploadToR2 } from "@/lib/r2Storage";
 import { DOCUMENTOS_PRIMERA_ETAPA, DOCUMENTOS_SEGUNDA_ETAPA } from "@/lib/documentTypes";
 import { documentoUploadSchema, documentoUploadConVencimientoSchema } from "@/lib/validationSchemas";
 
@@ -91,7 +92,7 @@ export const SubidaDocumento = ({ locadorId, etapa, documentosSubidos, onSuccess
       const nombreArchivo = `${sanitizarNombre(nombreDocumento)}_${sanitizarNombre(locador?.apellidos || "")}_${timestamp}.pdf`;
       const rutaArchivo = `${locadorId}/${nombreArchivo}`;
 
-      const { error: uploadError } = await supabase.storage.from("documentos").upload(rutaArchivo, archivo);
+      const { error: uploadError } = await uploadToR2(archivo!, rutaArchivo);
       if (uploadError) throw uploadError;
 
       const documentoData: any = {

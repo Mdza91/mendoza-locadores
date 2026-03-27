@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadToR2, deleteFromR2, downloadFromR2, getR2ViewUrl } from "@/lib/r2Storage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,7 +57,7 @@ export const PlantillasUsuariosConfig = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (plantilla: any) => {
-      await supabase.storage.from("documentos").remove([plantilla.ruta_archivo]);
+      await deleteFromR2([plantilla.ruta_archivo]);
       const { error } = await supabase.from("plantillas_usuarios").delete().eq("id", plantilla.id);
       if (error) throw error;
     },
@@ -76,7 +77,7 @@ export const PlantillasUsuariosConfig = () => {
     try {
       const ext = file.name.split(".").pop();
       const path = `plantillas/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-      const { error: uploadError } = await supabase.storage.from("documentos").upload(path, file);
+      const { error: uploadError } = await uploadToR2(file, path);
       if (uploadError) throw uploadError;
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -111,9 +112,9 @@ export const PlantillasUsuariosConfig = () => {
       }
       if (editFile) {
         // Remove old file
-        await supabase.storage.from("documentos").remove([plantilla.ruta_archivo]);
+        await deleteFromR2([plantilla.ruta_archivo]);
         const path = `plantillas/${Date.now()}_${editFile.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-        const { error: uploadError } = await supabase.storage.from("documentos").upload(path, editFile);
+        const { error: uploadError } = await uploadToR2(editFile, path);
         if (uploadError) throw uploadError;
         updates.ruta_archivo = path;
         updates.nombre_archivo = editFile.name;
@@ -141,24 +142,22 @@ export const PlantillasUsuariosConfig = () => {
   };
 
   const handleDownload = async (plantilla: any) => {
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(plantilla.ruta_archivo, 60);
-    if (data?.signedUrl) {
+    try {
+      const { data, error } = await downloadFromR2(plantilla.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
+      const url = URL.createObjectURL(data);
       const a = document.createElement("a");
-      a.href = data.signedUrl;
+      a.href = url;
       a.download = plantilla.nombre_archivo;
       a.click();
-    } else {
+      URL.revokeObjectURL(url);
+    } catch {
       toast.error("Error al generar enlace de descarga");
     }
   };
 
-  const handlePreview = async (plantilla: any) => {
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(plantilla.ruta_archivo, 300);
-    if (data?.signedUrl) {
-      setPreviewUrl(data.signedUrl);
-    } else {
-      toast.error("No se pudo previsualizar");
-    }
+  const handlePreview = (plantilla: any) => {
+    setPreviewUrl(getR2ViewUrl(plantilla.ruta_archivo));
   };
 
   return (

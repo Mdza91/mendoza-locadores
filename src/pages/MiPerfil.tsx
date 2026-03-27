@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadFromR2, getR2ViewUrl } from "@/lib/r2Storage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,12 +55,14 @@ const PlantillasDescargaLocador = () => {
   if (!plantillas?.length) return null;
 
   const handleDownload = async (p: any) => {
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(p.ruta_archivo, 60);
-    if (data?.signedUrl) {
+    const { data, error } = await downloadFromR2(p.ruta_archivo);
+    if (data && !error) {
+      const url = URL.createObjectURL(data);
       const a = document.createElement("a");
-      a.href = data.signedUrl;
+      a.href = url;
       a.download = p.nombre_archivo;
       a.click();
+      URL.revokeObjectURL(url);
     } else {
       toast.error("Error al descargar");
     }
@@ -1450,8 +1453,8 @@ const EmergencyDocCardWrapper = ({
 
   const handleDownload = async () => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").download(docSubido.ruta_archivo);
-      if (error) throw error;
+      const { data, error } = await downloadFromR2(docSubido.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
       const url = window.URL.createObjectURL(data);
       const a = document.createElement("a");
       a.href = url; a.download = docSubido.nombre_archivo;
@@ -1461,12 +1464,8 @@ const EmergencyDocCardWrapper = ({
     } catch (error) { toast.error("Error al descargar documento"); }
   };
 
-  const handleView = async () => {
-    try {
-      const { data, error } = await supabase.storage.from("documentos").createSignedUrl(docSubido.ruta_archivo, 60);
-      if (error) throw error;
-      window.open(data.signedUrl, "_blank");
-    } catch (error) { toast.error("Error al abrir documento"); }
+  const handleView = () => {
+    window.open(getR2ViewUrl(docSubido.ruta_archivo), "_blank");
   };
 
   const InfoPopover = () => textoAyuda ? (

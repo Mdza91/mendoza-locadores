@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadToR2, deleteFromR2, getR2PublicUrl } from "@/lib/r2Storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -71,12 +72,10 @@ export function AjustesGeneralesConfig() {
 
       // Delete old logo if exists
       if (settings.logo_url) {
-        await supabase.storage.from("documentos").remove([settings.logo_url]);
+        await deleteFromR2([settings.logo_url]);
       }
 
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(path, file, { upsert: true });
+      const { error: uploadError } = await uploadToR2(file, path);
       if (uploadError) throw uploadError;
 
       const { error: updateError } = await supabase
@@ -99,7 +98,7 @@ export function AjustesGeneralesConfig() {
     if (!settings?.logo_url) return;
     setSaving(true);
     try {
-      await supabase.storage.from("documentos").remove([settings.logo_url]);
+      await deleteFromR2([settings.logo_url]);
       const { error } = await supabase
         .from("config_app_settings")
         .update({ logo_url: null })
@@ -115,7 +114,7 @@ export function AjustesGeneralesConfig() {
   };
 
   const logoPublicUrl = settings?.logo_url
-    ? supabase.storage.from("documentos").getPublicUrl(settings.logo_url).data.publicUrl
+    ? getR2PublicUrl(settings.logo_url)
     : null;
 
   if (isLoading) {

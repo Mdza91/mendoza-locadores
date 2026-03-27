@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadToR2 } from "@/lib/r2Storage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, Loader2, X } from "lucide-react";
@@ -83,9 +84,7 @@ export const SubidaDocumentoLocador = ({
       const filePath = `pending/${locadorId}/${tipoDocumento}_${nombreSanitizado}_${timestamp}.pdf`;
 
       // Subir archivo a storage
-      const { error: uploadError } = await supabase.storage
-        .from("documentos")
-        .upload(filePath, archivo, { contentType: "application/pdf", upsert: false });
+      const { error: uploadError } = await uploadToR2(archivo, filePath);
 
       if (uploadError) throw uploadError;
 

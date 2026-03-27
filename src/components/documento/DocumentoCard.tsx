@@ -3,13 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, Eye, Trash2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { estaVencido, formatearFechaCorta } from "@/lib/dateUtils";
+import { downloadFromR2, deleteFromR2, getR2ViewUrl } from "@/lib/r2Storage";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DocumentoCardProps {
   documento: any;
@@ -34,8 +35,8 @@ export const DocumentoCard = ({ documento, titulo, onDelete, readOnly = false, r
 
   const handleDownload = async () => {
     try {
-      const { data, error } = await supabase.storage.from("documentos").download(documento.ruta_archivo);
-      if (error) throw error;
+      const { data, error } = await downloadFromR2(documento.ruta_archivo);
+      if (error || !data) throw error || new Error("Download failed");
       const url = window.URL.createObjectURL(data);
       const a = document.createElement("a");
       a.href = url; a.download = documento.nombre_archivo;
@@ -45,18 +46,14 @@ export const DocumentoCard = ({ documento, titulo, onDelete, readOnly = false, r
     } catch (error) { toast.error("Error al descargar documento"); }
   };
 
-  const handleView = async () => {
-    try {
-      const { data, error } = await supabase.storage.from("documentos").createSignedUrl(documento.ruta_archivo, 60);
-      if (error) throw error;
-      window.open(data.signedUrl, "_blank");
-    } catch (error) { toast.error("Error al abrir documento"); }
+  const handleView = () => {
+    window.open(getR2ViewUrl(documento.ruta_archivo), "_blank");
   };
 
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const { error: storageError } = await supabase.storage.from("documentos").remove([documento.ruta_archivo]);
+      const { error: storageError } = await deleteFromR2([documento.ruta_archivo]);
       if (storageError) throw storageError;
       const { error: dbError } = await supabase.from("documentos").delete().eq("id", documento.id);
       if (dbError) throw dbError;
