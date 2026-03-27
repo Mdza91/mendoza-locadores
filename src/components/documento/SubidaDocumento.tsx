@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { uploadToR2 } from "@/lib/r2Storage";
 import { DOCUMENTOS_PRIMERA_ETAPA, DOCUMENTOS_SEGUNDA_ETAPA } from "@/lib/documentTypes";
 import { documentoUploadSchema, documentoUploadConVencimientoSchema } from "@/lib/validationSchemas";
 
