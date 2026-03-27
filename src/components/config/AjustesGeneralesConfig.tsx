@@ -72,7 +72,7 @@ export function AjustesGeneralesConfig() {
 
       // Delete old logo if exists
       if (settings.logo_url) {
-        await supabase.storage.from("documentos").remove([settings.logo_url]);
+        await deleteFromR2([settings.logo_url]);
       }
 
       const { error: uploadError } = await supabase.storage
