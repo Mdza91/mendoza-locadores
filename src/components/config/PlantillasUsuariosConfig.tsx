@@ -156,13 +156,8 @@ export const PlantillasUsuariosConfig = () => {
     }
   };
 
-  const handlePreview = async (plantilla: any) => {
-    const { data } = await supabase.storage.from("documentos").createSignedUrl(plantilla.ruta_archivo, 300);
-    if (data?.signedUrl) {
-      setPreviewUrl(data.signedUrl);
-    } else {
-      toast.error("No se pudo previsualizar");
-    }
+  const handlePreview = (plantilla: any) => {
+    setPreviewUrl(getR2ViewUrl(plantilla.ruta_archivo));
   };
 
   return (
