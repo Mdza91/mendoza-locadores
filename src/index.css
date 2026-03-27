@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Design System with Dynamic Color Themes */
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Blue primary (default) */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 217 85% 70%;
+    --primary-dark: 217 91% 45%;
+
+    --secondary: 214 20% 94%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 214 20% 94%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status colors */
+    --success: 142 72% 42%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 95% 54%;
+    --warning-foreground: 222 47% 11%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Document status highlight colors */
+    --status-missing: 0 84% 60%;
+    --status-expired: 25 95% 53%;
+    --status-pending: 38 95% 54%;
+
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 214 20% 95%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 214 20% 95%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 214 20% 95%;
+
+    --card: 222 47% 9%;
+    --card-foreground: 214 20% 95%;
+
+    --popover: 222 47% 9%;
+    --popover-foreground: 214 20% 95%;
+
+    /* Blue primary (default) - dark mode */
+    --primary: 217 85% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 217 80% 65%;
+    --primary-dark: 217 91% 40%;
+
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 214 20% 95%;
+
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 16% 57%;
+
+    --accent: 217 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    
+    --success: 142 65% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 90% 55%;
+    --warning-foreground: 222 47% 11%;
+
+    --destructive: 0 65% 48%;
+    --destructive-foreground: 214 20% 95%;
+
+    --status-missing: 0 75% 55%;
+    --status-expired: 25 90% 50%;
+    --status-pending: 38 90% 55%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 85% 55%;
+    
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 214 20% 95%;
+    --sidebar-primary: 217 85% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 12%;
+    --sidebar-accent-foreground: 214 20% 95%;
+    --sidebar-border: 217 33% 12%;
+    --sidebar-ring: 217 85% 55%;
+  }
+
+  /* Teal Theme */
+  [data-theme="teal"] {
+    --primary: 173 58% 39%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 173 55% 55%;
+    --primary-dark: 173 60% 28%;
+    --accent: 173 58% 39%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 173 58% 39%;
+    --sidebar-primary: 173 58% 45%;
+    --sidebar-ring: 173 58% 45%;
+  }
+  [data-theme="teal"].dark {
+    --primary: 173 55% 50%;
+    --primary-light: 173 50% 62%;
+    --primary-dark: 173 58% 38%;
+    --accent: 173 55% 50%;
+    --ring: 173 55% 50%;
+    --sidebar-primary: 173 55% 50%;
+    --sidebar-ring: 173 55% 50%;
+  }
+
+  /* Purple Theme */
+  [data-theme="purple"] {
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 262 75% 68%;
+    --primary-dark: 262 83% 45%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 262 83% 58%;
+    --sidebar-primary: 262 83% 58%;
+    --sidebar-ring: 262 83% 58%;
+  }
+  [data-theme="purple"].dark {
+    --primary: 262 75% 55%;
+    --primary-light: 262 70% 65%;
+    --primary-dark: 262 83% 42%;
+    --accent: 262 75% 55%;
+    --ring: 262 75% 55%;
+    --sidebar-primary: 262 75% 55%;
+    --sidebar-ring: 262 75% 55%;
+  }
+
+  /* Rose Theme */
+  [data-theme="rose"] {
+    --primary: 350 89% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 350 80% 70%;
+    --primary-dark: 350 89% 48%;
+    --accent: 350 89% 60%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 350 89% 60%;
+    --sidebar-primary: 350 89% 60%;
+    --sidebar-ring: 350 89% 60%;
+  }
+  [data-theme="rose"].dark {
+    --primary: 350 80% 55%;
+    --primary-light: 350 75% 65%;
+    --primary-dark: 350 89% 45%;
+    --accent: 350 80% 55%;
+    --ring: 350 80% 55%;
+    --sidebar-primary: 350 80% 55%;
+    --sidebar-ring: 350 80% 55%;
+  }
+
+  /* Orange Theme */
+  [data-theme="orange"] {
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 25 90% 63%;
+    --primary-dark: 25 95% 42%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 25 95% 53%;
+    --sidebar-primary: 25 95% 53%;
+    --sidebar-ring: 25 95% 53%;
+  }
+  [data-theme="orange"].dark {
+    --primary: 25 90% 50%;
+    --primary-light: 25 85% 60%;
+    --primary-dark: 25 95% 40%;
+    --accent: 25 90% 50%;
+    --ring: 25 90% 50%;
+    --sidebar-primary: 25 90% 50%;
+    --sidebar-ring: 25 90% 50%;
+  }
+
+  /* Emerald Theme */
+  [data-theme="emerald"] {
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 160 75% 50%;
+    --primary-dark: 160 84% 30%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 160 84% 39%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-ring: 160 84% 39%;
+  }
+  [data-theme="emerald"].dark {
+    --primary: 160 75% 42%;
+    --primary-light: 160 70% 52%;
+    --primary-dark: 160 84% 32%;
+    --accent: 160 75% 42%;
+    --ring: 160 75% 42%;
+    --sidebar-primary: 160 75% 42%;
+    --sidebar-ring: 160 75% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Custom smooth scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 9999px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Status highlight utilities */
+  .status-missing {
+    @apply bg-destructive/10 border-destructive/30 text-destructive;
+  }
+  
+  .status-expired {
+    background-color: hsl(var(--status-expired) / 0.1);
+    border-color: hsl(var(--status-expired) / 0.3);
+    color: hsl(var(--status-expired));
+  }
+  
+  .status-pending {
+    @apply bg-warning/10 border-warning/30 text-warning;
+  }
+}
