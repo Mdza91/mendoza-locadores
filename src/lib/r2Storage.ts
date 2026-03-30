@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
+import { EDGE_FUNCTIONS_BASE_URL } from "./edgeFunctions";
 
 const R2_PUBLIC_URL = "https://pub-859bcf561b974ee98398f558079b35b9.r2.dev";
-import { EDGE_FUNCTIONS_BASE_URL } from "./edgeFunctions";
 
 /**
  * Get the public URL for a file stored in R2
