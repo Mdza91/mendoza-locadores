@@ -1,9 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
+import { EDGE_FUNCTIONS_BASE_URL } from "./edgeFunctions";
 
 const R2_PUBLIC_URL = "https://pub-859bcf561b974ee98398f558079b35b9.r2.dev";
-
-const SUPABASE_URL = "https://gikeegxdrkelhpfkcaci.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdpa2VlZ3hkcmtlbGhwZmtjYWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2MjM1MDgsImV4cCI6MjA5MDE5OTUwOH0.GQSx8-KblrXTzNxnwGi5j_QzwKhJr-akLP-KwBG-FsY";
 
 /**
  * Get the public URL for a file stored in R2
@@ -26,12 +24,11 @@ export async function uploadToR2(file: File, path: string): Promise<{ error: Err
     formData.append("path", path);
 
     const response = await fetch(
-      `${SUPABASE_URL}/functions/v1/r2-storage?action=upload`,
+      `${EDGE_FUNCTIONS_BASE_URL}/functions/v1/r2-storage?action=upload`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          apikey: SUPABASE_ANON_KEY,
         },
         body: formData,
       }
@@ -61,12 +58,11 @@ export async function deleteFromR2(paths: string[]): Promise<{ error: Error | nu
     if (!accessToken) throw new Error("No active session");
 
     const response = await fetch(
-      `${SUPABASE_URL}/functions/v1/r2-storage?action=delete`,
+      `${EDGE_FUNCTIONS_BASE_URL}/functions/v1/r2-storage?action=delete`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          apikey: SUPABASE_ANON_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ paths }),

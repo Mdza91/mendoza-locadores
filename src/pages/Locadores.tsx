@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { LocadorFormDialog } from "@/components/locador/LocadorFormDialog";
+import { invokeEdgeFunction } from "@/lib/edgeFunctions";
 
 const Locadores = () => {
   const navigate = useNavigate();
@@ -132,11 +133,8 @@ const Locadores = () => {
 
   const eliminarLocadorMutation = useMutation({
     mutationFn: async (locadorId: string) => {
-      const { data, error } = await supabase.functions.invoke('delete-locador', {
-        body: { locador_id: locadorId }
-      });
+      const { data, error } = await invokeEdgeFunction('delete-locador', { locador_id: locadorId });
       if (error) throw error;
-      if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: () => {
