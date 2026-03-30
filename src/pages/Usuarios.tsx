@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-import { invokeEdgeFunction } from "@/lib/edgeFunctions";
-import {
   Table,
   TableBody,
   TableCell,
@@ -16,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { UserPlus, UserMinus, Eye, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { invokeEdgeFunction } from "@/lib/edgeFunctions";
 import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
