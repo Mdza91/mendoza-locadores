@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+import { invokeEdgeFunction } from "@/lib/edgeFunctions";
+import {
   Table,
   TableBody,
   TableCell,
@@ -64,11 +66,10 @@ const Usuarios = () => {
   const crearCuentaMutation = useMutation({
     mutationFn: async (locador: any) => {
       if (!locador.numero_documento) throw new Error("Número de documento no disponible");
-      const { data, error } = await supabase.functions.invoke('manage-locador-user', {
-        body: { action: 'create', locador_id: locador.id, numero_documento: locador.numero_documento }
+      const { data, error } = await invokeEdgeFunction('manage-locador-user', {
+        action: 'create', locador_id: locador.id, numero_documento: locador.numero_documento
       });
       if (error) throw error;
-      if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: async () => { toast.success("Cuenta creada exitosamente"); await refetch(); },
@@ -77,11 +78,10 @@ const Usuarios = () => {
 
   const eliminarCuentaMutation = useMutation({
     mutationFn: async (locadorId: string) => {
-      const { data, error } = await supabase.functions.invoke('manage-locador-user', {
-        body: { action: 'delete', locador_id: locadorId }
+      const { data, error } = await invokeEdgeFunction('manage-locador-user', {
+        action: 'delete', locador_id: locadorId
       });
       if (error) throw error;
-      if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: async () => { toast.success("Cuenta eliminada exitosamente"); setDeleteDialogOpen(false); setSelectedLocador(null); await refetch(); },
