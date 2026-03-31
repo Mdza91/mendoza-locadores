@@ -27,17 +27,27 @@ Deno.serve(async (req) => {
     if (action === 'create') {
       console.log('Creating user for locador:', locador_id, 'with document:', numero_documento);
       
-      // Create user with admin API
-      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: `${numero_documento}@locador.local`,
-        password: numero_documento,
-        email_confirm: true,
-        user_metadata: { is_locador: true }
-      })
+      const email = `${numero_documento}@locador.local`;
+      
+      // Check if user already exists
+      const { data: usersData } = await supabaseAdmin.auth.admin.listUsers();
+      let userId = usersData?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())?.id;
+      
+      if (!userId) {
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email,
+          password: numero_documento,
+          email_confirm: true,
+          user_metadata: { is_locador: true }
+        })
 
-      if (authError) {
-        console.error('Auth error:', authError);
-        throw authError;
+        if (authError) {
+          console.error('Auth error:', authError);
+          throw authError;
+        }
+        userId = authData.user.id;
+      } else {
+        console.log('User already exists, reusing:', userId);
       }
 
       console.log('User created:', authData.user.id);
