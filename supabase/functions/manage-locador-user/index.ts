@@ -50,12 +50,12 @@ Deno.serve(async (req) => {
         console.log('User already exists, reusing:', userId);
       }
 
-      console.log('User created:', authData.user.id);
+      console.log('User ID:', userId);
 
       // Link user with locador
       const { error: updateError } = await supabaseAdmin
         .from('locadores')
-        .update({ user_id: authData.user.id })
+        .update({ user_id: userId })
         .eq('id', locador_id)
 
       if (updateError) {
