@@ -27,25 +27,35 @@ Deno.serve(async (req) => {
     if (action === 'create') {
       console.log('Creating user for locador:', locador_id, 'with document:', numero_documento);
       
-      // Create user with admin API
-      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: `${numero_documento}@locador.local`,
-        password: numero_documento,
-        email_confirm: true,
-        user_metadata: { is_locador: true }
-      })
+      const email = `${numero_documento}@locador.local`;
+      
+      // Check if user already exists
+      const { data: usersData } = await supabaseAdmin.auth.admin.listUsers();
+      let userId = usersData?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())?.id;
+      
+      if (!userId) {
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email,
+          password: numero_documento,
+          email_confirm: true,
+          user_metadata: { is_locador: true }
+        })
 
-      if (authError) {
-        console.error('Auth error:', authError);
-        throw authError;
+        if (authError) {
+          console.error('Auth error:', authError);
+          throw authError;
+        }
+        userId = authData.user.id;
+      } else {
+        console.log('User already exists, reusing:', userId);
       }
 
-      console.log('User created:', authData.user.id);
+      console.log('User ID:', userId);
 
       // Link user with locador
       const { error: updateError } = await supabaseAdmin
         .from('locadores')
-        .update({ user_id: authData.user.id })
+        .update({ user_id: userId })
         .eq('id', locador_id)
 
       if (updateError) {
@@ -58,7 +68,7 @@ Deno.serve(async (req) => {
       // Assign locador role (use upsert to avoid conflicts)
       const { error: roleError } = await supabaseAdmin
         .from('user_roles')
-        .upsert({ user_id: authData.user.id, role: 'locador' }, { onConflict: 'user_id,role' })
+        .upsert({ user_id: userId, role: 'locador' }, { onConflict: 'user_id,role' })
 
       if (roleError) {
         console.error('Role error:', roleError);
