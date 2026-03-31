@@ -132,6 +132,19 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Verify caller
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+    const verifyClient = createClient(EXTERNAL_SUPABASE_URL, EXTERNAL_SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    })
+    const { data: { user: caller }, error: callerErr } = await verifyClient.auth.getUser()
+    if (callerErr || !caller) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
     const supabaseAdmin = createClient(
       EXTERNAL_SUPABASE_URL,
       EXTERNAL_SERVICE_ROLE_KEY,
