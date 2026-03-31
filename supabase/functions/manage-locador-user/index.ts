@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
       // Assign locador role (use upsert to avoid conflicts)
       const { error: roleError } = await supabaseAdmin
         .from('user_roles')
-        .upsert({ user_id: authData.user.id, role: 'locador' }, { onConflict: 'user_id,role' })
+        .upsert({ user_id: userId, role: 'locador' }, { onConflict: 'user_id,role' })
 
       if (roleError) {
         console.error('Role error:', roleError);
