@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify auth
+    // Verify auth using external project
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
@@ -120,6 +120,8 @@ Deno.serve(async (req) => {
       if (!file || !path) {
         return new Response(JSON.stringify({ error: 'file and path are required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
+
+      console.log('Uploading to R2:', path, 'size:', file.size, 'type:', file.type)
 
       const bytes = new Uint8Array(await file.arrayBuffer())
       const r2Response = await signRequest('PUT', path, bytes, file.type || 'application/octet-stream')

@@ -1,1 +1,10 @@
 project_id = "vfrhingfdteydwuvuttg"
+
+[functions.manage-locador-user]
+verify_jwt = false
+
+[functions.delete-locador]
+verify_jwt = false
+
+[functions.r2-storage]
+verify_jwt = false
